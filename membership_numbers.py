@@ -34,7 +34,7 @@ def index():
 	temporary_df2 = df[(df.invoice_amount == 60)]
 	temporary_df2['invoice_amount'] = 50
 	temporary_df2['membership_type'] = "monthly"
-	new_df = df[(df.membership_type != "monthly + family")].append(temporary_df).append(temporary_df2)
+	new_df = df[(df.invoice_amount != 60)].append(temporary_df).append(temporary_df2)
 	return render_template("analysis.html", name="Membership Data", data=new_df.groupby(["product_date","membership_type"]).sum().unstack(1).fillna(0)["product_count"].to_html(classes="table table-striped"))
 	
 if __name__ == '__main__':
