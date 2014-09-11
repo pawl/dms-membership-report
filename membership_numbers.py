@@ -1,4 +1,6 @@
 import pandas as pd
+import os
+
 from flask import Flask, render_template
 app = Flask(__name__)
 
@@ -26,10 +28,10 @@ def index():
 
 	# hack to split out the monthly + family invoices	
 	df['membership_type'] = df.apply(determine_type, axis=1)
-	temporary_df = df[(df.membership_type == "monthly + family")]
+	temporary_df = df[(df.invoice_amount == 60)]
 	temporary_df['invoice_amount'] = 10
 	temporary_df['membership_type'] = "family"
-	temporary_df2 = df[(df.membership_type == "monthly + family")]
+	temporary_df2 = df[(df.invoice_amount == 60)]
 	temporary_df2['invoice_amount'] = 50
 	temporary_df2['membership_type'] = "monthly"
 	new_df = df[(df.membership_type != "monthly + family")].append(temporary_df).append(temporary_df2)
