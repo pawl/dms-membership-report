@@ -21,7 +21,7 @@ def index():
 		540: "yearly", 
 		10: "family", 
 		20: "family", # an invoice with two family memberships
-		60: "monthly + family"
+		60: "monthly + family" #
 	}
 	def determine_type(row):
 		return invoice_amount_dict[row['invoice_amount']]
@@ -38,6 +38,5 @@ def index():
 	return render_template("analysis.html", name="Membership Data", data=new_df.groupby(["product_date","membership_type"]).sum().unstack(1).fillna(0)["product_count"].to_html(classes="table table-striped"))
 	
 if __name__ == '__main__':
-	app.debug = True
 	port = int(os.environ.get("PORT", 5000))
 	app.run(host="0.0.0.0", port=port)
