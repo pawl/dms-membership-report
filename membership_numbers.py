@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-	df = pd.read_json('http://dallasmakerspace.org/misc/membership_table.php')
+	df = pd.read_json('https://accounts.dallasmakerspace.org/membership_table.php')
 
 	# mapping of 
 	invoice_amount_dict = {
