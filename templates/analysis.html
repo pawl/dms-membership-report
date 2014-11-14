@@ -2,14 +2,85 @@
 PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
-<head>
-<title>Membership Data</title>
-<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="screen">
-</head>
+	<head>
+		<title>Membership Data</title>
+		<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="screen">
+		<style>
+		.panel {
+			padding-left: 0px;
+			padding-right: 0px;
+		}
+		</style>
+		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+		<script type="text/javascript">
+		  google.load("visualization", "1", {packages:["corechart"]});
+		  google.setOnLoadCallback(drawChart);
+		  function drawChart() {
+			var data = google.visualization.arrayToDataTable([
+			  ['Year/Month', 'Membership Revenue'],
+			  {% for key, items in data.iteritems() %}
+			  ['{{ key }}',  {{ items['Total $'] }}]{% if not loop.last %},{% endif %}
+			  {% endfor %}
+			]);
 
-<body>
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-<h1>{{name}}</h1>
-{{data | safe}}
-</body>
+			var options = {
+			  title: 'Membership Revenue',
+			  legend: {position: 'none'},
+			  vAxis: {format: '$#,###'}
+			};
+
+			var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+
+			chart.draw(data, options);
+		  }
+		  
+		  // make google chart responsive
+		  $(window).resize(function(){
+			  drawChart();
+			});
+		</script>
+	</head>
+
+	<body>
+		{% with messages = get_flashed_messages() %}
+		  {% if messages %}
+			<ul class=flashes>
+			{% for message in messages %}
+			  <div class="alert alert-danger" role="alert">{{ message }}</div>
+			{% endfor %}
+			</ul>
+		  {% endif %}
+		{% endwith %}
+		<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+		<h1>{{name}}</h1>
+		
+		<div class="panel panel-info col-md-2 col-md-offset-5 col-sm-12">
+			<div class="panel-heading">Current Membership ({{ current_month }})</div>
+			<table class="table table-striped">
+				<tr>
+					<th>Total</th><th>Members</th><th>Family Members</th>
+				</tr>
+				<tr>
+					<td>{{ current_membership['Total'] }}</td><td>{{ current_membership['Members'] }}</td><td>{{ current_membership['Family Members'] }}</td>
+				</tr>
+			</table>
+		</div>
+		
+		<div id="chart_div" class="col-sm-12" style="height: 500px;"></div>
+		
+		<div class="panel panel-info col-sm-12">
+			<div class="panel-heading">Raw Data</div>
+			<table class="table table-striped">
+				<tr>
+					<th>Product Date</th><th>{{ headers|join('</th><th>')|safe }}</th>
+				</tr>
+				{% for key, items in data.iteritems() %}
+				<tr>
+					<th>{{ key }}</th><td>{{ items.values()|join('</td><td>')|safe }}</td>
+				</tr>
+				{% endfor %}
+			</table>
+		</div>
+	</body>
 </html>
