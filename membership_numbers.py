@@ -18,7 +18,8 @@ def index():
 		35: "Members - Monthly", # starving hacker
 		40: "Members - Monthly", # old regular rate
 		50: "Members - Monthly", 
-		150: "Members - Monthly", # monthly corporate
+		150: "Corporate - Monthly", # monthly corporate
+		200: "Corporate - Monthly", # monthly corporate w/ extra card
 		540: "Members - Yearly", 
 		10: "Family Members - Monthly", 
 		20: "Family Members - Monthly", # an invoice with two family memberships
@@ -53,6 +54,9 @@ def index():
 		# split out invoices with 2 family memberships
 		elif invoice_amount == 20:
 			products_by_month[product_date]["Family Members - Monthly"] += product_count*2
+		# -50 = redeemed gift, ignore
+		elif invoice_amount == -50:
+			pass
 		elif invoice_amount in amount_product_mapping:
 			products_by_month[product_date][amount_product_mapping.get(invoice_amount)] += product_count
 		else:
